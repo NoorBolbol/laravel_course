@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Student;
-
+use DB;
 class StudentController extends Controller
 {
     public function index(){
@@ -13,11 +13,11 @@ class StudentController extends Controller
     	// $students = DB::select($query);
 
     	// Query Builder
-    	// $students = DB::table('students')->select('*')->get();
-
+    	$students = DB::table('students')->select('*')->limit(1)->get();
+    	var_dump($students);
     	// Eloquent ORM
     	// $students = Student::withTrashed()->select('*')->get();
-    	$students = Student::select('*')->get();
+    	// $students = Student::select('*')->get();
     	// $students->toArray();
     	return view('student.index')->with('students', $students);
     }
