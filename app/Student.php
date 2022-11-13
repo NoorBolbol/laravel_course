@@ -11,4 +11,12 @@ class Student extends Model
     //
     // protected $table = 'students';
     // protected $primaryKey = 'student_id';
+
+    public function user(){
+    	return $this->belongsTo('App\User');//user_id
+    }
+
+    public function college(){
+    	return $this->belongsTo('App\College');
+    }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Student;
+use App\User;
+use App\College;
 use DB;
 class StudentController extends Controller
 {
@@ -13,11 +15,10 @@ class StudentController extends Controller
     	// $students = DB::select($query);
 
     	// Query Builder
-    	$students = DB::table('students')->select('*')->limit(1)->get();
-    	var_dump($students);
+    	$students = DB::table('students')->select('*')->get();
     	// Eloquent ORM
     	// $students = Student::withTrashed()->select('*')->get();
-    	// $students = Student::select('*')->get();
+    	$students = Student::select('*')->get();
     	// $students->toArray();
     	return view('student.index')->with('students', $students);
     }
@@ -52,7 +53,13 @@ class StudentController extends Controller
     	// $student = DB::table('students')->select('*')->where('id', $id)->first();
 
     	// Eloquent ORM
-		$student = Student::select('*')->where('id', $id)->first();
+		// $student = Student::select('*')->where('id', $id)->with('user')->with('college')->first();
+		// $college = College::select('*')->where('id', 1)->with('student')->first();
+		// $students = $college->student;
+		// foreach($students as $student){
+		// 	echo $student->std.'<br>';
+		// }
+		// die;
     	return view('student.edit')->with('student', $student);
     }
 
