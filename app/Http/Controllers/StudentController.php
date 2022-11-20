@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Student;
 use App\User;
 use App\College;
 use DB;
+
 class StudentController extends Controller
 {
     public function index(){
@@ -15,12 +17,23 @@ class StudentController extends Controller
     	// $students = DB::select($query);
 
     	// Query Builder
-    	$students = DB::table('students')->select('*')->get();
+    	// $students = DB::table('students')->select('*')->get();
     	// Eloquent ORM
     	// $students = Student::withTrashed()->select('*')->get();
-    	$students = Student::select('*')->get();
-    	// $students->toArray();
-    	return view('student.index')->with('students', $students);
+    	$credit = 4;
+    	$students = Student::select('*')
+    		->with('user')
+    		->with('courseStudent')
+    		->with(['courseStudent.course'=> function ($query) use ($credit){
+    			$query->where('credit', $credit);
+    		}])
+    		// ->with('courseStudent.course_2')
+    		->get();
+    	foreach ($students as $student) {
+    		$student->image = Storage::disk('local')->url($student->image);
+    	}
+    	dd($students->toArray());
+    	// return view('student.index')->with('students', $students);
     }
 
     public function create(){
@@ -35,11 +48,22 @@ class StudentController extends Controller
     	// Query Builder
     	// DB::table('students')->insert(['name'=>$request->name, 'email'=>$request->email, 'status'=>'Y']);
 
+    	$img = $request->file('image');
+
+    	$path = 'public/user_images/';
+
+    	// $name = $img->getClientOriginalName();
+    	$name = time().'_'.rand(1,10000).'.'.$img->getClientOriginalExtension();
+
+    	Storage::disk('local')->put($path.$name, file_get_contents($img));
+
+
     	// Eloquent ORM
     	$student = new Student;
-    	$student->name = $request->name;
-    	$student->email = $request->email;
+    	$student->std = '22020000';
+    	$student->gpa = 90;
     	$student->status = 'Y';
+    	$student->image = $path.$name;
     	$student->save();
     	return redirect('/students');
     }
