@@ -8,6 +8,7 @@ use App\Student;
 use App\User;
 use App\College;
 use DB;
+use App\Http\Requests\StudentRequest;
 
 class StudentController extends Controller
 {
@@ -17,22 +18,22 @@ class StudentController extends Controller
     	// $students = DB::select($query);
 
     	// Query Builder
-    	// $students = DB::table('students')->select('*')->get();
+    	$students = DB::table('students')->select('*')->get();
     	// Eloquent ORM
     	// $students = Student::withTrashed()->select('*')->get();
-    	$credit = 4;
-    	$students = Student::select('*')
-    		->with('user')
-    		->with('courseStudent')
-    		->with(['courseStudent.course'=> function ($query) use ($credit){
-    			$query->where('credit', $credit);
-    		}])
-    		// ->with('courseStudent.course_2')
-    		->get();
+    	// $credit = 4;
+    	// $students = Student::select('*')
+    	// 	->with('user')
+    	// 	->with('courseStudent')
+    	// 	->with(['courseStudent.course'=> function ($query) use ($credit){
+    	// 		$query->where('credit', $credit);
+    	// 	}])
+    	// 	// ->with('courseStudent.course_2')
+    	// 	->get();
     	foreach ($students as $student) {
     		$student->image = Storage::disk('local')->url($student->image);
     	}
-    	dd($students->toArray());
+    	dd($students);
     	// return view('student.index')->with('students', $students);
     }
 
@@ -40,7 +41,7 @@ class StudentController extends Controller
     	return view('student.create');
     }
 
-    public function store(Request $request){
+    public function store(StudentRequest $request){
     	// Raw Query
     	// $query = 'INSERT INTO students (name, email, status) VALUES ($request->name, $request->email, 'Y')';
     	// DB::statement($query);
@@ -60,7 +61,7 @@ class StudentController extends Controller
 
     	// Eloquent ORM
     	$student = new Student;
-    	$student->std = '22020000';
+    	$student->std = '22020005';
     	$student->gpa = 90;
     	$student->status = 'Y';
     	$student->image = $path.$name;
@@ -77,7 +78,7 @@ class StudentController extends Controller
     	// $student = DB::table('students')->select('*')->where('id', $id)->first();
 
     	// Eloquent ORM
-		// $student = Student::select('*')->where('id', $id)->with('user')->with('college')->first();
+		$student = Student::select('*')->where('id', $id)->with('user')->first();
 		// $college = College::select('*')->where('id', 1)->with('student')->first();
 		// $students = $college->student;
 		// foreach($students as $student){
@@ -98,8 +99,8 @@ class StudentController extends Controller
     	// Eloquent ORM
 		// $student = Student::where('id', $request->id)->update(['name'=>$request->name, 'email'=>$request->email]);
     	$student = Student::find($request->id);
-    	$student->name = $request->name;
-    	$student->email = $request->email;
+    	$student->user()->update(['name' => $request->name, 'email' => $request->email]);
+    	$student->std = 90;
     	$student->save();
 
 		return redirect()->back();

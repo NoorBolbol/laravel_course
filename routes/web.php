@@ -20,7 +20,9 @@ Route::get('/students/create', 'StudentController@create');
 Route::post('/students/store', 'StudentController@store');
 
 Route::get('/students/edit/{id}', 'StudentController@edit');
-Route::post('/students/update', 'StudentController@update');
+Route::put('/students/update', 'StudentController@update');
 
 Route::get('/students/drop/{id}', 'StudentController@drop');
 Route::get('/students/restore/{id}', 'StudentController@restore');
+
+Route::get('/courses', 'CourseController@index');
