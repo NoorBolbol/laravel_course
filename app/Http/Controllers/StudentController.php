@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 use App\Student;
 use App\User;
 use App\College;
@@ -35,6 +36,7 @@ class StudentController extends Controller
     	}
     	dd($students);
     	// return view('student.index')->with('students', $students);
+        return View::make('student.index')->with('students', $students);
     }
 
     public function create(){

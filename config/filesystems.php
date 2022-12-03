@@ -46,7 +46,8 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
-            'url' => env('APP_URL').'/storage/app',
+            'url' => 'http://localhost/laravel-project/blog/storage/app',
+            'visibility' => 'public',
         ],
 
         'public' => [
