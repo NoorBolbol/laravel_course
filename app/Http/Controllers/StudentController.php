@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use App\Student;
 use App\User;
@@ -13,28 +14,34 @@ use App\Http\Requests\StudentRequest;
 
 class StudentController extends Controller
 {
-    public function index(){
+	public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function index(Request $request){
+		Auth::user()->id;
     	// Raw Query
     	// $query = 'SELECT * FROM students';
     	// $students = DB::select($query);
 
     	// Query Builder
-    	$students = DB::table('students')->select('*')->get();
+    	// $students = DB::table('students')->select('*')->get();
     	// Eloquent ORM
     	// $students = Student::withTrashed()->select('*')->get();
     	// $credit = 4;
-    	// $students = Student::select('*')
-    	// 	->with('user')
-    	// 	->with('courseStudent')
-    	// 	->with(['courseStudent.course'=> function ($query) use ($credit){
-    	// 		$query->where('credit', $credit);
-    	// 	}])
-    	// 	// ->with('courseStudent.course_2')
-    	// 	->get();
-    	foreach ($students as $student) {
-    		$student->image = Storage::disk('local')->url($student->image);
-    	}
-    	dd($students);
+    	$students = Student::select('*')
+    		->with('user')
+    		->with('courseStudent')
+    		// ->with(['courseStudent.course'=> function ($query) use ($credit){
+    		// 	$query->where('credit', $credit);
+    		// }])
+    		// ->with('courseStudent.course_2')
+    		->get();
+    	// foreach ($students as $student) {
+    	// 	$student->image = Storage::disk('local')->url($student->image);
+    	// }
+    	// dd($request->time);
     	// return view('student.index')->with('students', $students);
         return View::make('student.index')->with('students', $students);
     }
@@ -43,7 +50,7 @@ class StudentController extends Controller
     	return view('student.create');
     }
 
-    public function store(StudentRequest $request){
+    public function store(Request $request){
     	// Raw Query
     	// $query = 'INSERT INTO students (name, email, status) VALUES ($request->name, $request->email, 'Y')';
     	// DB::statement($query);
@@ -63,12 +70,13 @@ class StudentController extends Controller
 
     	// Eloquent ORM
     	$student = new Student;
-    	$student->std = '22020005';
+    	$student->std = '220200353';
     	$student->gpa = 90;
     	$student->status = 'Y';
     	$student->image = $path.$name;
-    	$student->save();
-    	return redirect('/students');
+	    $status = $student->save();
+		// $status? session()->falsh('status','Added successfully'):null;
+    	return redirect()->back()->with('status', $status);
     }
 
 	public function edit($id){

@@ -14,15 +14,21 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/students', 'StudentController@index');
+Route::get('/students', 'StudentController@index')->middleware('auth');//->middleware(['lang','timezone']);
 
-Route::get('/students/create', 'StudentController@create');
+Route::get('/students/create', 'StudentController@create')->middleware('lang');
 Route::post('/students/store', 'StudentController@store');
 
 Route::get('/students/edit/{id}', 'StudentController@edit');
 Route::put('/students/update', 'StudentController@update');
 
+// Route::group(['middleware' => ['lang', 'timezone'] ], function(){
 Route::get('/students/drop/{id}', 'StudentController@drop');
 Route::get('/students/restore/{id}', 'StudentController@restore');
 
 Route::get('/courses', 'CourseController@index');
+// });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
