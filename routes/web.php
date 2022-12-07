@@ -11,6 +11,10 @@
 |
 */
 
+// Route::group(['middleware'=> ['lang']], function(){
+
+// });
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -26,7 +30,7 @@ Route::put('/students/update', 'StudentController@update');
 Route::get('/students/drop/{id}', 'StudentController@drop');
 Route::get('/students/restore/{id}', 'StudentController@restore');
 
-Route::get('/courses', 'CourseController@index');
+Route::get('/courses', 'CourseController@index')->middleware('errors_handle');
 // });
 
 Auth::routes();

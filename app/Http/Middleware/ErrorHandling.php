@@ -3,10 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App;
 use Exception;
 
-class CheckLangParam
+class ErrorHandling
 {
     /**
      * Handle an incoming request.
@@ -17,18 +16,11 @@ class CheckLangParam
      */
     public function handle($request, Closure $next)
     {
-        if($request->has('lang')){
-            App::setLocale($request->lang);
+        try{
             return $next($request);
-        }else{
-            return response()->view('welcome');
+        } catch (Exception $e){
+            return response()->view('errors.error');
         }
         
-
-        // try{
-        //     return $next($request);
-        // } catch (Exception $e){
-        //     return response()->view('errors.error');
-        // }
     }
 }
